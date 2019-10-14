@@ -1,0 +1,4 @@
+**/.ipynb_checkpoints
+**.pyc
+dash/data/*
+!dash/data/.gitkeep

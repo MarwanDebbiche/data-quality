@@ -1,0 +1,16 @@
+  
+body {
+    background-color: #f2f2f2;
+    margin-left: 5%;
+    margin-right: 5%;
+    margin-top: 2.5%;
+}
+
+
+.error{
+    background-color: #d52d40;
+    color: white;
+    padding: 15px;
+    margin: 30px;
+    border-radius: 5px;
+}
