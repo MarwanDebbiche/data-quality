@@ -84,6 +84,13 @@ class SimpleDataManager:
 
         self._save_data()
 
+    def generate_profiling_report(self, save=True):
+        profile = self.data.profile_report(title='Profiling Report')
+        if save:
+            profile.to_file(output_file=f"{self.DATA_PATH}/profiling-report.html")
+
+        return profile
+
 
 if __name__ == "__main__":
     data_manager = DataManager()

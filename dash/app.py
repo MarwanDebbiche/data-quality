@@ -16,14 +16,23 @@ import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
 from data_manager import SimpleDataManager as DataManager
+from flask import Flask, send_from_directory
 # from data_manager import DataManager
 import pandas as pd
 
 
 data_manager = DataManager()
-external_stylesheets = ["https://codepen.io/chriddyp/pen/bWLwgP.css"]
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = Flask(__name__)
+app = dash.Dash(server=server)
+
+DOWNLOAD_DIRECTORY = "data"
+
+
+@server.route("/download/<path:path>")
+def download(path):
+    """Serve a file from the upload directory."""
+    return send_from_directory(DOWNLOAD_DIRECTORY, path, as_attachment=True)
 
 
 def get_global_stat_view(df):
@@ -42,6 +51,7 @@ def get_global_stat_view(df):
                         )
                     )
                 ),
+                html.Hr(),
             ]
         )
     else:
@@ -70,7 +80,6 @@ app.layout = html.Div(
                         html.A(["Select a CSV or a XLS* file to add to current data"])
                     ),
                     style={
-                        # "width": "100%",
                         "height": "60px",
                         "lineHeight": "60px",
                         "borderWidth": "1px",
@@ -88,7 +97,6 @@ app.layout = html.Div(
                         html.Strong(" OVERWRITE "), "current data"])
                     ),
                     style={
-                        # "width": "100%",
                         "height": "60px",
                         "lineHeight": "60px",
                         "borderWidth": "1px",
@@ -102,13 +110,36 @@ app.layout = html.Div(
             ],
             className="row flex-display"
         ),
+        html.Hr(),
         # Stat on dataset
         dcc.Loading(
             [
                 html.H3(id="dataset_info", children="Dataset informations:"),
-                html.Div(id="dataset_stat", children=get_global_stat_view(data_manager.data)),
+                html.Div(id="dataset_stat"),
                 html.Div(id="output-data-upload"),
             ]
+        ),
+        # Stat on column
+
+        # Generate pandas profiling report
+        html.Div(0, id="generate_profiling_button_last_ts_click", style={"display": "none"}),
+        html.Div(
+            [
+                html.Button(
+                    "Generate Profiling Report",
+                    id="generate-profiling-button", className="six columns"
+                ),
+                dcc.Loading(
+                    [
+                        html.A(
+                            "Download Profiling Report", id="download-profiling-report-link",
+                            style={"display": "none", "text-align": "right"}
+                        ),
+                    ],
+                    className="six columns"
+                )
+            ],
+            className="row flex-display"
         )
     ]
 )
@@ -119,7 +150,7 @@ def get_head_view():
         [
             html.H5("Head :"),
             dash_table.DataTable(
-                data=data_manager.data.head(10).to_dict("rows"),
+                data=data_manager.data.head(5).to_dict("rows"),
                 columns=[{"name": i, "id": i} for i in data_manager.data.columns],
             ),
             html.Hr(),
@@ -166,6 +197,35 @@ def update_output_data_upload(content_add, content_overwrite, filename_add, file
 )
 def display_df_stat(content):
     return get_global_stat_view(data_manager.data)
+
+
+global generate_profiling_button_last_ts_click
+generate_profiling_button_last_ts_click = 0
+
+@app.callback(
+    [
+        Output("download-profiling-report-link", "href"),
+        Output("download-profiling-report-link", "style"),
+        Output("generate_profiling_button_last_ts_click", "children")
+    ],
+    [
+        Input("generate-profiling-button", "n_clicks_timestamp"),
+        Input("upload-data-add", "last_modified"),
+        Input("upload-data-overwrite", "last_modified")
+    ],
+    [
+        State("generate_profiling_button_last_ts_click", "children")
+    ]
+)
+def generate_profilin_report(ts_click, ts_add, ts_overwrite, last_ts_click):
+    last_ts_click = int(last_ts_click)
+    if ts_click is None:
+        return "", {"display": "none"}, 0
+    if ts_click > last_ts_click:
+        profile = data_manager.generate_profiling_report()
+        return "/download/profiling-report.html", {"display": "block", "text-align": "right"}, ts_click
+
+    return "", {"display": "none"}, 0
 
 
 if __name__ == "__main__":
