@@ -39,7 +39,7 @@ class DataManager:
         decoded = base64.b64decode(content_string)
 
         if "csv" in filename:
-            df = pd.read_csv(io.StringIO(decoded.decode("utf-8")))
+            df = pd.read_csv(io.StringIO(decoded.decode("utf-8")), sep=None, engine='python')
         elif "xls" in filename:
             df = pd.read_excel(io.BytesIO(decoded))
 
@@ -73,7 +73,7 @@ class SimpleDataManager:
         decoded = base64.b64decode(content_string)
 
         if "csv" in filename:
-            df = pd.read_csv(io.StringIO(decoded.decode("utf-8")))
+            df = pd.read_csv(io.StringIO(decoded.decode("utf-8")), sep=None, engine='python')
         elif "xls" in filename:
             df = pd.read_excel(io.BytesIO(decoded))
 
