@@ -51,6 +51,27 @@ class DataManager:
         self.profile_report = self._generate_report()
         self._save_data()
 
+    def get_dataset_stats(self, n_top_var_w_missing_val=5):
+        n_obs, n_var = self.data.shape
+        missing_count = self.data.isna().sum().sum()
+        missing_count_percent = 100.0 * self.data.isna().sum().sum() / (n_obs * n_var)
+        missing_count_per_var = self.data.isna().sum().sort_values(ascending=False)
+        variables_with_missing_values = (
+            pd.DataFrame(
+                missing_count_per_var[missing_count_per_var > 0]
+                .head(n_top_var_w_missing_val)
+            )
+            .reset_index()
+            .rename(columns={"index": "variable", 0: "count"})
+            .to_dict(orient="records")
+        )
+        return {
+            "n_obs": n_obs, "n_var": n_var,
+            "missing_count": missing_count,
+            "missing_count_percent": missing_count_percent,
+            "variables_with_missing_values": variables_with_missing_values
+        }
+
 
 class SimpleDataManager:
     DATA_PATH = "data"
@@ -90,6 +111,27 @@ class SimpleDataManager:
             profile.to_file(output_file=f"{self.DATA_PATH}/profiling-report.html")
 
         return profile
+
+    def get_dataset_stats(self, n_top_var_w_missing_val=5):
+        n_obs, n_var = self.data.shape
+        missing_count = self.data.isna().sum().sum()
+        missing_count_percent = 100.0 * self.data.isna().sum().sum() / (n_obs * n_var)
+        missing_count_per_var = self.data.isna().sum().sort_values(ascending=False)
+        variables_with_missing_values = (
+            pd.DataFrame(
+                missing_count_per_var[missing_count_per_var > 0]
+                .head(n_top_var_w_missing_val)
+            )
+            .reset_index()
+            .rename(columns={"index": "variable", 0: "count"})
+            .to_dict(orient="records")
+        )
+        return {
+            "n_obs": n_obs, "n_var": n_var,
+            "missing_count": missing_count,
+            "missing_count_percent": missing_count_percent,
+            "variables_with_missing_values": variables_with_missing_values
+        }
 
 
 if __name__ == "__main__":
