@@ -16,8 +16,7 @@ def get_global_stat_view(df):
                             2,
                         )
                     )
-                ),
-                html.Hr(),
+                )
             ]
         )
     else:
@@ -31,7 +30,6 @@ def get_head_view(df):
             dash_table.DataTable(
                 data=df.head(5).to_dict("rows"),
                 columns=[{"name": i, "id": i} for i in df.columns],
-            ),
-            html.Hr(),
+            )
         ]
     )

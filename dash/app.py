@@ -90,16 +90,17 @@ app.layout = html.Div(
             ],
             className="row flex-display",
         ),
-        html.Hr(),
+        html.Hr(className="custom-hr"),
         # Stat on dataset
         dcc.Loading(
             [
-                html.H3(id="dataset_info", children="Dataset informations:"),
+                html.H3("Dataset informations :"),
                 html.Div(id="dataset_stat"),
+                html.Hr(className="custom-hr"),
                 html.Div(id="output-data-upload"),
             ]
         ),
-        # Stat on column
+        html.Hr(className="custom-hr"),
         # Generate pandas profiling report
         html.Div(
             0, id="generate_profiling_button_last_ts_click", style={"display": "none"}

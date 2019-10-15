@@ -14,3 +14,7 @@ body {
     margin: 30px;
     border-radius: 5px;
 }
+
+.custom-hr{
+    margin-bottom: 10px;
+}
