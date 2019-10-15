@@ -95,7 +95,7 @@ app.layout = html.Div(
         dcc.Loading(
             [
                 html.H3("Dataset informations :"),
-                html.Div(id="output-data-upload"),
+                html.Div(id="head-view-container"),
                 html.Div(id="dataset-stat"),
                 html.Hr(className="custom-hr"),
             ]
@@ -132,7 +132,7 @@ app.layout = html.Div(
 
 # Table - dataset's head
 @app.callback(
-    [Output("output-data-upload", "children"), Output("download-link", "href")],
+    [Output("head-view-container", "children"), Output("download-link", "href")],
     [Input("upload-data-add", "contents"), Input("upload-data-overwrite", "contents")],
     [State("upload-data-add", "filename"), State("upload-data-overwrite", "filename")],
 )
@@ -152,7 +152,7 @@ def update_output_data_upload(
 
 # Stat on the global dataset
 @app.callback(
-    Output("dataset-stat", "children"), [Input("output-data-upload", "children")]
+    Output("dataset-stat", "children"), [Input("head-view-container", "children")]
 )
 def display_df_stat(content):
     return get_global_stat_view(data_manager.data)
