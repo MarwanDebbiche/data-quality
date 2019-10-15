@@ -95,15 +95,16 @@ app.layout = html.Div(
         dcc.Loading(
             [
                 html.H3("Dataset informations :"),
-                html.Div(id="dataset_stat"),
-                html.Hr(className="custom-hr"),
                 html.Div(id="output-data-upload"),
+                html.Div(id="dataset-stat"),
+                html.Hr(className="custom-hr"),
             ]
         ),
         html.Hr(className="custom-hr"),
         # Generate pandas profiling report
         html.Div(
-            0, id="generate_profiling_button_last_ts_click", style={"display": "none"}
+            0, id="generate-profiling-button-last-ts-click",
+            style={"display": "none"}
         ),
         html.Div(
             [
@@ -151,28 +152,24 @@ def update_output_data_upload(
 
 # Stat on the global dataset
 @app.callback(
-    Output("dataset_stat", "children"), [Input("output-data-upload", "children")]
+    Output("dataset-stat", "children"), [Input("output-data-upload", "children")]
 )
 def display_df_stat(content):
     return get_global_stat_view(data_manager.data)
-
-
-global generate_profiling_button_last_ts_click
-generate_profiling_button_last_ts_click = 0
 
 
 @app.callback(
     [
         Output("download-profiling-report-link", "href"),
         Output("download-profiling-report-link", "style"),
-        Output("generate_profiling_button_last_ts_click", "children"),
+        Output("generate-profiling-button-last-ts-click", "children"),
     ],
     [
         Input("generate-profiling-button", "n_clicks_timestamp"),
         Input("upload-data-add", "last_modified"),
         Input("upload-data-overwrite", "last_modified"),
     ],
-    [State("generate_profiling_button_last_ts_click", "children")],
+    [State("generate-profiling-button-last-ts-click", "children")],
 )
 def generate_profilin_report(ts_click, ts_add, ts_overwrite, last_ts_click):
     last_ts_click = int(last_ts_click)
