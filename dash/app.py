@@ -1,10 +1,4 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Wed Feb 27 14:47:25 2019
-
-@author: lysop
-"""
-
 import base64
 import datetime
 import io
@@ -15,6 +9,8 @@ from dash.dependencies import Input, Output, State
 import dash_core_components as dcc
 import dash_html_components as html
 import dash_table
+import dash_auth
+from config import VALID_USERNAME_PASSWORD_PAIRS
 from data_manager import SimpleDataManager as DataManager
 from flask import Flask, send_from_directory
 # from data_manager import DataManager
@@ -25,6 +21,10 @@ data_manager = DataManager()
 
 server = Flask(__name__)
 app = dash.Dash(server=server)
+auth = dash_auth.BasicAuth(
+    app,
+    VALID_USERNAME_PASSWORD_PAIRS
+)
 
 DOWNLOAD_DIRECTORY = "data"
 
