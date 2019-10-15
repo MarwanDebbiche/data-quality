@@ -43,7 +43,7 @@ app.layout = html.Div(
                     "Download data",
                     id="download-link",
                     className="six columns",
-                    style={"text-align": "right"},
+                    style={"textAlign": "right"},
                 ),
             ],
             className="row flex-display",
@@ -116,7 +116,7 @@ app.layout = html.Div(
                         html.A(
                             "Download Profiling Report",
                             id="download-profiling-report-link",
-                            style={"display": "none", "text-align": "right"},
+                            style={"display": "none", "textAlign": "right"},
                         )
                     ],
                     className="six columns",
@@ -181,7 +181,7 @@ def generate_profilin_report(ts_click, ts_add, ts_overwrite, last_ts_click):
         profile = data_manager.generate_profiling_report()
         return (
             "/download/profiling-report.html",
-            {"display": "block", "text-align": "right"},
+            {"display": "block", "textAlign": "right"},
             ts_click,
         )
 
