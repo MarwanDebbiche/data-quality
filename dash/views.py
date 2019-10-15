@@ -1,5 +1,5 @@
 import dash_html_components as html
-
+import dash_table
 
 def get_global_stat_view(df):
     if df is not None:
@@ -22,3 +22,16 @@ def get_global_stat_view(df):
         )
     else:
         return []
+
+
+def get_head_view(df):
+    return html.Div(
+        [
+            html.H5("Head :"),
+            dash_table.DataTable(
+                data=df.head(5).to_dict("rows"),
+                columns=[{"name": i, "id": i} for i in df.columns],
+            ),
+            html.Hr(),
+        ]
+    )

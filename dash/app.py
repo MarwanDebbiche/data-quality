@@ -13,7 +13,7 @@ import dash_auth
 from config import VALID_USERNAME_PASSWORD_PAIRS
 from data_manager import SimpleDataManager as DataManager
 from flask import Flask, send_from_directory
-from views import get_global_stat_view
+from views import get_global_stat_view, get_head_view
 # from data_manager import DataManager
 import pandas as pd
 
@@ -123,19 +123,6 @@ app.layout = html.Div(
 )
 
 
-def get_head_view():
-    return html.Div(
-        [
-            html.H5("Head :"),
-            dash_table.DataTable(
-                data=data_manager.data.head(5).to_dict("rows"),
-                columns=[{"name": i, "id": i} for i in data_manager.data.columns],
-            ),
-            html.Hr(),
-        ]
-    )
-
-
 # Table - dataset's head
 @app.callback(
     [
@@ -166,7 +153,7 @@ def update_output_data_upload(content_add, content_overwrite, filename_add, file
         "data:text/csv;charset=utf-8," + urllib.parse.quote(download_data)
     )
 
-    return get_head_view(), download_data
+    return get_head_view(data_manager.data), download_data
 
 
 # Stat on the global dataset
