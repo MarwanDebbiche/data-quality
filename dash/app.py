@@ -13,6 +13,7 @@ import dash_auth
 from config import VALID_USERNAME_PASSWORD_PAIRS
 from data_manager import SimpleDataManager as DataManager
 from flask import Flask, send_from_directory
+from views import get_global_stat_view
 # from data_manager import DataManager
 import pandas as pd
 
@@ -33,29 +34,6 @@ DOWNLOAD_DIRECTORY = "data"
 def download(path):
     """Serve a file from the upload directory."""
     return send_from_directory(DOWNLOAD_DIRECTORY, path, as_attachment=True)
-
-
-def get_global_stat_view(df):
-    if df is not None:
-        return html.Div(
-            [
-                html.P("Number of variales: {}".format(df.shape[1])),
-                html.P("Number of observations: {}".format(df.shape[0])),
-                html.P(
-                    "Total missing values: {}%".format(
-                        round(
-                            100
-                            * (len(df) - df.count()).sum()
-                            / (df.shape[0] * df.shape[1]),
-                            2,
-                        )
-                    )
-                ),
-                html.Hr(),
-            ]
-        )
-    else:
-        return []
 
 
 app.layout = html.Div(
